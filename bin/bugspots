@@ -36,6 +36,16 @@ OptionParser.new do |opts|
   opts.on('--display-timestamps', 'show timestamps of each identified fix commit') do |dt|
     options[:display_timestamps] = true
   end
+
+  # Option: Allow for max-age
+  opts.on('--max-age [max_age]', 'maximum commit age') do |max|
+    options[:max_age] = max.to_s
+  end
+
+  # Option: Allow for min-age
+  opts.on('--min-age [min_age]', 'minimum commit age') do |min|
+    options[:min_age] = min.to_s
+  end
 end.parse!
 
 # Set a reasonable default of depth
@@ -47,7 +57,7 @@ options[:branch] ||= "master"
 puts "Scanning #{ARGV[0]} repo".foreground(:green)
 
 begin
-  fixes, spots = Bugspots.scan(ARGV[0], options[:branch], options[:depth], options[:regex])
+  fixes, spots = Bugspots.scan(ARGV[0], options[:branch], options[:depth], options[:regex], options[:max_age], options[:min_age])
 
   puts "\tFound #{fixes.size} bugfix commits, with #{spots.size} hotspots:".foreground(:yellow)
   puts
